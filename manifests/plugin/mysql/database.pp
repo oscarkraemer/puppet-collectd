@@ -11,6 +11,7 @@ define collectd::plugin::mysql::database (
   $socket             = undef,
   $innodbstats        = undef,
   $slavenotifications = undef,
+  $wsrepstats         = undef,
 ) {
 
   include ::collectd
@@ -26,6 +27,10 @@ define collectd::plugin::mysql::database (
 
   if $innodbstats != undef {
     validate_bool($innodbstats)
+  }
+
+  if $wsrepstats != undef {
+    validate_bool($wsrepstats)
   }
 
   if $slavenotifications != undef {
