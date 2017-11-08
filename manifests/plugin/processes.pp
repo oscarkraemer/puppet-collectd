@@ -18,14 +18,8 @@ class collectd::plugin::processes (
     interval => $interval,
   }
 
-  if ( $processes or $process_matches ) {
-    $process_config_ensure = 'present'
-  } else {
-    $process_config_ensure = absent
-  }
-
   concat { "${collectd::plugin_conf_dir}/processes-config.conf":
-    ensure         => $process_config_ensure,
+    ensure         => $ensure,
     mode           => '0640',
     owner          => 'root',
     group          => $collectd::root_group,
@@ -33,15 +27,18 @@ class collectd::plugin::processes (
     ensure_newline => true,
   }
   concat::fragment { 'collectd_plugin_processes_conf_header':
+    ensure  => $ensure,
     order   => '00',
     content => '<Plugin processes>',
     target  => "${collectd::plugin_conf_dir}/processes-config.conf",
   }
   concat::fragment { 'collectd_plugin_processes_conf_footer':
+    ensure  => $ensure,
     order   => '99',
     content => '</Plugin>',
     target  => "${collectd::plugin_conf_dir}/processes-config.conf",
   }
+
 
   if $processes {
     collectd::plugin::processes::process { $processes : }
